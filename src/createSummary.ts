@@ -1,17 +1,16 @@
 import * as github from "@actions/github";
 import fs from "fs";
-import path from "path";
 
 export default async ({
-  filename,
-  dirname,
-  summaryTitle,
+  filepath,
+  summaryTitle = "Custom check summary",
   token,
+  index,
 }: {
-  filename: string;
-  dirname: string;
+  filepath: string;
   token: string;
   summaryTitle?: string;
+  index: number;
 }) => {
   const octokit = github.getOctokit(token);
 
@@ -23,9 +22,13 @@ export default async ({
   } = github.context;
 
   // create title for custom check summary
-  const title =
-    `${summaryTitle}: ` +
-    filename.replace(/[-_]/g, " ").replace(/.(md|html|log)/, "");
+  const titlePrefix = `${summaryTitle} ${index}:`;
+  const fileTitle = filepath
+    .split("/")
+    .slice(-1)[0]
+    .replace(/[-_]/g, " ")
+    .replace(/\.(md|html|log)/, "");
+  const title = [titlePrefix, `"${fileTitle}"`].join(" ");
 
   // create empty (in-progress) summary
   const {
@@ -35,7 +38,6 @@ export default async ({
     name: title,
     status: "in_progress",
     output: {
-      title,
       summary: "",
     },
     ...repo,
@@ -43,7 +45,6 @@ export default async ({
 
   // read file to update
   const summary = await new Promise<string>((res) => {
-    const filepath = path.join(dirname, filename);
     fs.readFile(filepath, (err, data) => {
       if (err) throw err;
       res(data.toString());

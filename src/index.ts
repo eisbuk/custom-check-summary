@@ -1,14 +1,35 @@
 import * as core from "@actions/core";
 import path from "path";
+import fs from "fs";
 
 import createSummary from "./createSummary";
 
-(async () => {
-  const token = core.getInput("GITHUB_TOKEN");
-  const dirname = path.join(process.cwd(), "temp");
-  const filename = "temp.md";
+const getFiles = (dirname: string) =>
+  new Promise<[string[], Error | null]>((res) => {
+    fs.readdir(dirname, (err, files) => {
+      if (err) {
+        return res([[], err]);
+      }
 
-  await createSummary({ filename, dirname, token });
+      const filePaths = files.map((fName) => path.join(dirname, fName));
+      return res([filePaths, null]);
+    });
+  });
+
+(async () => {
+  // load action inputs
+  const token = core.getInput("GITHUB_TOKEN");
+  const dirname = core.getInput("FILE_DIR");
+  const summaryTitle = core.getInput("SUMMARY_TITLE") as string | undefined;
+
+  const dirpath = path.join(process.cwd(), dirname);
+  const [filesToRead, err] = await getFiles(dirpath);
+  if (err) throw err;
+
+  const createSummaryJobs = filesToRead.map((filepath, index) =>
+    createSummary({ filepath, token, index: index + 1, summaryTitle })
+  );
+  await Promise.all(createSummaryJobs);
 })();
 
 // const getCheckRunContext = (): { sha: string; runId: number } => {

@@ -6,9 +6,12 @@ inputs:
   GITHUB_TOKEN:
     description: "GitHub token"
     required: true
-  TEST_INPUT:
-    description: "TEMP"
+  FILE_DIR:
+    description: "Root relative path of directory containing files to create summaries from"
     required: true
+  SUMMARY_TITLE:
+    description: "Title prefix for each summary: each summary will be titled '<SUMMARY_TITLE> <summary_index>: <filename>', defauts to 'Custom Summary'"
+    required: false
 
 runs:
   using: "node12"

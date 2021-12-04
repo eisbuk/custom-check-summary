@@ -18,4 +18,5 @@ jobs:
         uses: ./
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TEST_INPUT: "Im a test string"
+          FILE_DIR: "temp"
+          SUMMARY_TITLE: "Test summary"
