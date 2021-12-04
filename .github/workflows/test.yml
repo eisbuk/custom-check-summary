@@ -16,3 +16,6 @@ jobs:
         run: yarn build
       - name: Run action
         uses: ./
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TEST_INPUT: "Im a test string"

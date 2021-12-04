@@ -6,6 +6,9 @@ inputs:
   GITHUB_TOKEN:
     description: "GitHub token"
     required: true
+  TEST_INPUT:
+    description: "TEMP"
+    required: true
 
 runs:
   using: "node12"
