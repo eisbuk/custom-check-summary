@@ -1,0 +1,8 @@
+# Base
+node_modules/*
+
+# Editor setup
+.vscode/*
+
+# Temp logs
+yarn-error.log

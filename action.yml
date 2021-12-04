@@ -1,0 +1,12 @@
+name: "Custom check summary"
+description: "A GitHub action used to create a custom check summary from provided file(s)"
+author: "Eisbuk team"
+
+inputs:
+  GITHUB_TOKEN:
+    description: "GitHub token"
+    required: true
+
+runs:
+  using: "node12"
+  main: dist/main.js
