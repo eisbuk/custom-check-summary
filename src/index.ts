@@ -1,32 +1,14 @@
-import * as github from "@actions/github";
 import * as core from "@actions/core";
+import path from "path";
+
+import createSummary from "./createSummary";
 
 (async () => {
-  const GITHUB_TOKEN = core.getInput("GITHUB_TOKEN");
-  const TEST_INPUT = core.getInput("TEST_INPUT");
+  const token = core.getInput("GITHUB_TOKEN");
+  const dirname = path.join(process.cwd(), "temp");
+  const filename = "temp.md";
 
-  const octokit = github.getOctokit(GITHUB_TOKEN);
-
-  const { context } = github;
-  const { eventName, payload } = context;
-
-  const sha = github.context.payload.head_commit.id;
-  const { repo } = github.context;
-
-  console.log("Event name > ", eventName);
-
-  console.log("Sha > ", sha);
-
-  await octokit.rest.checks.create({
-    head_sha: sha,
-    name: "Test summary title",
-    status: "in_progress",
-    output: {
-      title: "Test summary",
-      summary: `This is you test input > ${TEST_INPUT}`,
-    },
-    ...repo,
-  });
+  await createSummary({ filename, dirname, token });
 })();
 
 // const getCheckRunContext = (): { sha: string; runId: number } => {
