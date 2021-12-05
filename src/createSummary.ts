@@ -6,20 +6,18 @@ export default async ({
   summaryTitle = "Custom check summary",
   token,
   index,
+  sha,
 }: {
+  sha: string;
   filepath: string;
   token: string;
   summaryTitle?: string;
   index: number;
 }) => {
   const octokit = github.getOctokit(token);
+  const { repo } = github.context;
 
-  const {
-    repo,
-    payload: {
-      head_commit: { id: sha },
-    },
-  } = github.context;
+  console.log(`Creating summary from file: ${filepath}`);
 
   // create title for custom check summary
   const titlePrefix = `${summaryTitle} ${index}:`;
@@ -38,6 +36,7 @@ export default async ({
     name: title,
     status: "in_progress",
     output: {
+      title,
       summary: "",
     },
     ...repo,
